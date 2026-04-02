@@ -4,6 +4,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddSingleton<CardService>();
+builder.Services.AddSingleton<EstadoService>();
+builder.Services.AddSingleton<AnimalService>();
 
 // ── CORS (permite o frontend se conectar) ─────────────
 builder.Services.AddCors(options =>
@@ -97,6 +99,146 @@ app.MapDelete("/api/cards/{id:guid}", (Guid id, CardService svc) =>
 })
 .WithName("DeleteCard")
 .WithTags("Cards");
+
+// ── Endpoints Estados ─────────────────────────────────
+
+// GET /api/estados → Retorna todos os estados
+app.MapGet("/api/estados", (EstadoService svc) =>
+{
+    return Results.Ok(svc.GetAll());
+})
+.WithName("GetAllEstados")
+.WithTags("Estados");
+
+// GET /api/estados/{id} → Retorna um estado pelo ID
+app.MapGet("/api/estados/{id:guid}", (Guid id, EstadoService svc) =>
+{
+    var estado = svc.GetById(id);
+    return estado is not null ? Results.Ok(estado) : Results.NotFound();
+})
+.WithName("GetEstadoById")
+.WithTags("Estados");
+
+// GET /api/estados/regiao/{regiao} → Retorna estados filtrados por região
+app.MapGet("/api/estados/regiao/{regiao}", (string regiao, EstadoService svc) =>
+{
+    var estados = svc.GetByRegiao(regiao);
+    return Results.Ok(estados);
+})
+.WithName("GetEstadosByRegiao")
+.WithTags("Estados");
+
+// POST /api/estados → Cria um novo estado
+app.MapPost("/api/estados", (Estado estado, EstadoService svc) =>
+{
+    // Validações básicas
+    if (string.IsNullOrWhiteSpace(estado.Nome))
+        return Results.BadRequest(new { error = "Nome é obrigatório" });
+    
+    if (string.IsNullOrWhiteSpace(estado.Sigla) || estado.Sigla.Length != 2)
+        return Results.BadRequest(new { error = "Sigla deve ter exatamente 2 caracteres" });
+
+    var created = svc.Add(estado);
+    return Results.Created($"/api/estados/{created.Id}", created);
+})
+.WithName("CreateEstado")
+.WithTags("Estados");
+
+// PUT /api/estados/{id} → Atualiza um estado existente
+app.MapPut("/api/estados/{id:guid}", (Guid id, Estado updated, EstadoService svc) =>
+{
+    // Validações básicas
+    if (string.IsNullOrWhiteSpace(updated.Nome))
+        return Results.BadRequest(new { error = "Nome é obrigatório" });
+    
+    if (string.IsNullOrWhiteSpace(updated.Sigla) || updated.Sigla.Length != 2)
+        return Results.BadRequest(new { error = "Sigla deve ter exatamente 2 caracteres" });
+
+    var estado = svc.Update(id, updated);
+    return estado is not null ? Results.Ok(estado) : Results.NotFound();
+})
+.WithName("UpdateEstado")
+.WithTags("Estados");
+
+// DELETE /api/estados/{id} → Remove um estado
+app.MapDelete("/api/estados/{id:guid}", (Guid id, EstadoService svc) =>
+{
+    return svc.Delete(id) ? Results.NoContent() : Results.NotFound();
+})
+.WithName("DeleteEstado")
+.WithTags("Estados");
+
+// ── Endpoints Animais ──────────────────────────────────
+
+// GET /api/animais → Retorna todos os animais
+app.MapGet("/api/animais", (AnimalService svc) =>
+{
+    return Results.Ok(svc.GetAll());
+})
+.WithName("GetAllAnimais")
+.WithTags("Animais");
+
+// GET /api/animais/{id} → Retorna um animal pelo ID
+app.MapGet("/api/animais/{id:guid}", (Guid id, AnimalService svc) =>
+{
+    var animal = svc.GetById(id);
+    return animal is not null ? Results.Ok(animal) : Results.NotFound();
+})
+.WithName("GetAnimalById")
+.WithTags("Animais");
+
+// GET /api/estados/{estadoId}/animais → Retorna animais de um estado
+app.MapGet("/api/estados/{estadoId:guid}/animais", (Guid estadoId, AnimalService svc) =>
+{
+    var animais = svc.GetByEstadoId(estadoId);
+    return Results.Ok(animais);
+})
+.WithName("GetAnimaisByEstado")
+.WithTags("Animais");
+
+// POST /api/animais → Cria um novo animal
+app.MapPost("/api/animais", (Animal animal, AnimalService animalSvc, EstadoService estadoSvc) =>
+{
+    // Validações básicas
+    if (string.IsNullOrWhiteSpace(animal.Nome))
+        return Results.BadRequest(new { error = "Nome é obrigatório" });
+    
+    // Verifica se o estado existe
+    var estado = estadoSvc.GetById(animal.EstadoId);
+    if (estado is null)
+        return Results.BadRequest(new { error = "EstadoId deve existir" });
+
+    var created = animalSvc.Add(animal);
+    return Results.Created($"/api/animais/{created.Id}", created);
+})
+.WithName("CreateAnimal")
+.WithTags("Animais");
+
+// PUT /api/animais/{id} → Atualiza um animal existente
+app.MapPut("/api/animais/{id:guid}", (Guid id, Animal updated, AnimalService animalSvc, EstadoService estadoSvc) =>
+{
+    // Validações básicas
+    if (string.IsNullOrWhiteSpace(updated.Nome))
+        return Results.BadRequest(new { error = "Nome é obrigatório" });
+    
+    // Verifica se o estado existe
+    var estado = estadoSvc.GetById(updated.EstadoId);
+    if (estado is null)
+        return Results.BadRequest(new { error = "EstadoId deve existir" });
+
+    var animal = animalSvc.Update(id, updated);
+    return animal is not null ? Results.Ok(animal) : Results.NotFound();
+})
+.WithName("UpdateAnimal")
+.WithTags("Animais");
+
+// DELETE /api/animais/{id} → Remove um animal
+app.MapDelete("/api/animais/{id:guid}", (Guid id, AnimalService svc) =>
+{
+    return svc.Delete(id) ? Results.NoContent() : Results.NotFound();
+})
+.WithName("DeleteAnimal")
+.WithTags("Animais");
 
 app.Run();
 
