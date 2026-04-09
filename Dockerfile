@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 
 WORKDIR /src
 
@@ -15,7 +15,7 @@ RUN dotnet publish -c Release -o /app/publish
 # ============================================
 # ESTÁGIO 2: Produção (Execução)
 # ============================================
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
 
 WORKDIR /app
 
