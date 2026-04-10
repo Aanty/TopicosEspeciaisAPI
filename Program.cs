@@ -7,6 +7,13 @@ builder.Services.AddSingleton<CardService>();
 builder.Services.AddSingleton<EstadoService>();
 builder.Services.AddSingleton<AnimalService>();
 
+// ── Configuração JSON ─────────────────────────────────
+builder.Services.ConfigureHttpJsonOptions(options =>
+{
+    options.SerializerOptions.PropertyNamingPolicy = null; // Mantém nomes originais
+    options.SerializerOptions.WriteIndented = true;
+});
+
 // ── CORS (permite o frontend se conectar) ─────────────
 builder.Services.AddCors(options =>
 {
@@ -197,17 +204,21 @@ app.MapGet("/api/estados/{estadoId:guid}/animais", (Guid estadoId, AnimalService
 .WithTags("Animais");
 
 // POST /api/animais → Cria um novo animal
-app.MapPost("/api/animais", (Animal animal, AnimalService animalSvc, EstadoService estadoSvc) =>
+app.MapPost("/api/animais", (AnimalDto animalDto, AnimalService animalSvc, EstadoService estadoSvc) =>
 {
     // Validações básicas
-    if (string.IsNullOrWhiteSpace(animal.Nome))
+    if (string.IsNullOrWhiteSpace(animalDto.Nome))
         return Results.BadRequest(new { error = "Nome é obrigatório" });
     
+    if (string.IsNullOrWhiteSpace(animalDto.EstadoId) || !Guid.TryParse(animalDto.EstadoId, out var estadoGuid))
+        return Results.BadRequest(new { error = "EstadoId deve ser um GUID válido" });
+    
     // Verifica se o estado existe
-    var estado = estadoSvc.GetById(animal.EstadoId);
+    var estado = estadoSvc.GetById(estadoGuid);
     if (estado is null)
         return Results.BadRequest(new { error = "EstadoId deve existir" });
 
+    var animal = animalDto.ToAnimal();
     var created = animalSvc.Add(animal);
     return Results.Created($"/api/animais/{created.Id}", created);
 })
@@ -215,17 +226,21 @@ app.MapPost("/api/animais", (Animal animal, AnimalService animalSvc, EstadoServi
 .WithTags("Animais");
 
 // PUT /api/animais/{id} → Atualiza um animal existente
-app.MapPut("/api/animais/{id:guid}", (Guid id, Animal updated, AnimalService animalSvc, EstadoService estadoSvc) =>
+app.MapPut("/api/animais/{id:guid}", (Guid id, AnimalDto animalDto, AnimalService animalSvc, EstadoService estadoSvc) =>
 {
     // Validações básicas
-    if (string.IsNullOrWhiteSpace(updated.Nome))
+    if (string.IsNullOrWhiteSpace(animalDto.Nome))
         return Results.BadRequest(new { error = "Nome é obrigatório" });
     
+    if (string.IsNullOrWhiteSpace(animalDto.EstadoId) || !Guid.TryParse(animalDto.EstadoId, out var estadoGuid))
+        return Results.BadRequest(new { error = "EstadoId deve ser um GUID válido" });
+    
     // Verifica se o estado existe
-    var estado = estadoSvc.GetById(updated.EstadoId);
+    var estado = estadoSvc.GetById(estadoGuid);
     if (estado is null)
         return Results.BadRequest(new { error = "EstadoId deve existir" });
 
+    var updated = animalDto.ToAnimal();
     var animal = animalSvc.Update(id, updated);
     return animal is not null ? Results.Ok(animal) : Results.NotFound();
 })
