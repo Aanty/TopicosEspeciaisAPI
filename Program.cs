@@ -117,6 +117,18 @@ app.MapGet("/api/estados", (EstadoService svc) =>
 .WithName("GetAllEstados")
 .WithTags("Estados");
 
+// GET /api/estados/debug → Retorna estados com informações para debug
+app.MapGet("/api/estados/debug", (EstadoService svc) =>
+{
+    var estados = svc.GetAll().Select(e => new { e.Id, e.Nome, e.Sigla, e.Regiao }).ToList();
+    return Results.Ok(new { 
+        total = estados.Count, 
+        estados = estados 
+    });
+})
+.WithName("GetEstadosDebug")
+.WithTags("Estados");
+
 // GET /api/estados/{id} → Retorna um estado pelo ID
 app.MapGet("/api/estados/{id:guid}", (Guid id, EstadoService svc) =>
 {
@@ -203,6 +215,15 @@ app.MapGet("/api/estados/{estadoId:guid}/animais", (Guid estadoId, AnimalService
 .WithName("GetAnimaisByEstado")
 .WithTags("Animais");
 
+// GET /api/animais/estado/{estadoId} → Endpoint alternativo para compatibilidade com frontend
+app.MapGet("/api/animais/estado/{estadoId:guid}", (Guid estadoId, AnimalService svc) =>
+{
+    var animais = svc.GetByEstadoId(estadoId);
+    return Results.Ok(animais);
+})
+.WithName("GetAnimaisByEstadoAlt")
+.WithTags("Animais");
+
 // POST /api/animais → Cria um novo animal
 app.MapPost("/api/animais", (AnimalDto animalDto, AnimalService animalSvc, EstadoService estadoSvc) =>
 {
@@ -211,12 +232,22 @@ app.MapPost("/api/animais", (AnimalDto animalDto, AnimalService animalSvc, Estad
         return Results.BadRequest(new { error = "Nome é obrigatório" });
     
     if (string.IsNullOrWhiteSpace(animalDto.EstadoId) || !Guid.TryParse(animalDto.EstadoId, out var estadoGuid))
-        return Results.BadRequest(new { error = "EstadoId deve ser um GUID válido" });
+        return Results.BadRequest(new { 
+            error = "EstadoId deve ser um GUID válido",
+            estadoIdRecebido = animalDto.EstadoId
+        });
     
     // Verifica se o estado existe
     var estado = estadoSvc.GetById(estadoGuid);
     if (estado is null)
-        return Results.BadRequest(new { error = "EstadoId deve existir" });
+    {
+        var estadosDisponiveis = estadoSvc.GetAll().Select(e => new { e.Id, e.Nome, e.Sigla }).Take(5).ToList();
+        return Results.BadRequest(new { 
+            error = "EstadoId deve existir",
+            estadoIdRecebido = estadoGuid,
+            exemploEstadosValidos = estadosDisponiveis
+        });
+    }
 
     var animal = animalDto.ToAnimal();
     var created = animalSvc.Add(animal);
