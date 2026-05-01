@@ -21,7 +21,7 @@ public class AnimalService
                 Nome = "Boto-cor-de-rosa",
                 NomeCientifico = "Inia geoffrensis",
                 Descricao = "Golfinho de água doce endêmico da Bacia Amazônica",
-                UrlImagem = "https://example.com/boto-cor-de-rosa.jpg",
+                UrlImagem = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTD4KTGhUubWQeuMvPdHx8sdZ5pmyPeF-aJnR6YBqtTnQIrd9ONK_dHPfcLtX1DCzgE-vDo3fupTAnWYwDWLNthf2R1HRdOZC8aR8PzOWc&s=10",
                 EstadoId = Guid.Parse("11111111-1111-1111-1111-111111111113") // AM
             },
             new()
