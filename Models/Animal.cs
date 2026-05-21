@@ -5,5 +5,6 @@ public class Animal
     public string NomeCientifico { get; set; } = string.Empty;
     public string Descricao { get; set; } = string.Empty;
     public string UrlImagem { get; set; } = string.Empty;
+    public string UrlVideo { get; set; } = string.Empty;
     public Guid EstadoId { get; set; }
 }

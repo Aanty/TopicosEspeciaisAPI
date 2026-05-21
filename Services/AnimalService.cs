@@ -141,6 +141,7 @@ public class AnimalService
         animal.NomeCientifico = updated.NomeCientifico;
         animal.Descricao = updated.Descricao;
         animal.UrlImagem = updated.UrlImagem;
+        animal.UrlVideo = updated.UrlVideo;
         animal.EstadoId = updated.EstadoId;
 
         return animal;
