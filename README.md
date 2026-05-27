@@ -2,46 +2,65 @@
 
 Uma API REST completa desenvolvida em .NET 9 com Minimal APIs, focada no gerenciamento de fauna brasileira, estados e sistema de quadro Kanban.
 
-## 🚀 Tecnologias
+---
 
-- **.NET 9.0** - Framework principal
-- **Minimal APIs** - Arquitetura moderna e performática
-- **Swagger/OpenAPI** - Documentação automática
-- **Docker** - Containerização
-- **C#** - Linguagem de programação
+# 🚀 Tecnologias
 
-## 📋 Funcionalidades
+* .NET 9.0 - Framework principal
+* Minimal APIs - Arquitetura moderna e performática
+* Swagger/OpenAPI - Documentação automática
+* Docker - Containerização
+* C# - Linguagem de programação
 
-### 🐾 Módulo Animais
-- **CRUD completo** para fauna brasileira
-- **10 animais pré-cadastrados** representando cada região do Brasil
-- **Relacionamento** com estados brasileiros
-- **Validações robustas** com mensagens detalhadas
-- **Filtros** por estado
+---
 
-### 🗺️ Módulo Estados
-- **CRUD completo** para estados brasileiros
-- **27 estados pré-cadastrados** (26 estados + DF)
-- **Organização por região** (Norte, Nordeste, Centro-Oeste, Sudeste, Sul)
-- **Filtros** por região
-- **Endpoint debug** para desenvolvimento
+# 📋 Funcionalidades
 
-### 📋 Módulo Cards (Scrum Board)
-- **Sistema Kanban completo** com 5 status: Backlog, ToDo, Doing, Testing, Done
-- **Prioridades**: Low, Medium, High, Urgent
-- **Funcionalidade especial**: mover cards entre colunas
-- **Timestamps automáticos** (criação/atualização)
-- **5 cards de exemplo** simulando projeto real
+## 🐾 Módulo Animais
 
-## 🛠️ Instalação e Execução
+* CRUD completo para fauna brasileira
+* 10 animais pré-cadastrados representando cada região do Brasil
+* Relacionamento com estados brasileiros
+* Validações robustas com mensagens detalhadas
+* Filtros por estado
+* Cadastro de link de vídeo do YouTube para os animais
+* Visualização de vídeos dos animais após o cadastro
+* Integração multimídia com imagens e vídeos dos animais
 
-### Pré-requisitos
-- .NET 9.0 SDK
-- Docker (opcional)
+---
 
-### Executando localmente
+## 🗺️ Módulo Estados
 
-```bash
+* CRUD completo para estados brasileiros
+* 27 estados pré-cadastrados (26 estados + DF)
+* Organização por região (Norte, Nordeste, Centro-Oeste, Sudeste, Sul)
+* Filtros por região
+* Endpoint debug para desenvolvimento
+
+---
+
+## 📋 Módulo Cards (Scrum Board)
+
+* Sistema Kanban completo com 5 status: Backlog, ToDo, Doing, Testing, Done
+* Prioridades: Low, Medium, High, Urgent
+* Funcionalidade especial: mover cards entre colunas
+* Timestamps automáticos (criação/atualização)
+* 5 cards de exemplo simulando projeto real
+
+---
+
+# 🛠️ Instalação e Execução
+
+## Pré-requisitos
+
+* .NET 9.0 SDK
+* Docker (opcional)
+
+---
+
+## Executando localmente
+
+```bash id="rqwxh2"
 # Clone o repositório
 git clone https://github.com/seu-usuario/TopicosEspeciaisAPI.git
 
@@ -56,13 +75,16 @@ dotnet run
 ```
 
 A API estará disponível em:
-- **HTTP**: http://localhost:5085
-- **HTTPS**: https://localhost:7208
-- **Swagger**: http://localhost:5085/swagger
 
-### Executando com Docker
+* HTTP: [http://localhost:5085](http://localhost:5085)
+* HTTPS: [https://localhost:7208](https://localhost:7208)
+* Swagger: [http://localhost:5085/swagger](http://localhost:5085/swagger)
 
-```bash
+---
+
+## Executando com Docker
+
+```bash id="rzjlwm"
 # Build da imagem
 docker build -t topicosespeciaisapi .
 
@@ -70,14 +92,17 @@ docker build -t topicosespeciaisapi .
 docker run -p 8080:80 topicosespeciaisapi
 ```
 
-A API estará disponível em: http://localhost:8080
+A API estará disponível em:
 
-## 📚 Documentação da API
+* [http://localhost:8080](http://localhost:8080)
 
-### Endpoints Principais
+---
 
-#### 🐾 Animais
-```
+# 📚 Documentação da API
+
+# 🐾 Animais
+
+```text id="azx78v"
 GET    /api/animais                    # Lista todos os animais
 GET    /api/animais/{id}               # Busca animal por ID
 GET    /api/animais/estado/{estadoId}  # Lista animais por estado
@@ -86,8 +111,11 @@ PUT    /api/animais/{id}               # Atualiza animal
 DELETE /api/animais/{id}               # Remove animal
 ```
 
-#### 🗺️ Estados
-```
+---
+
+# 🗺️ Estados
+
+```text id="9iuh6f"
 GET    /api/estados                    # Lista todos os estados
 GET    /api/estados/{id}               # Busca estado por ID
 GET    /api/estados/regiao/{regiao}    # Lista estados por região
@@ -97,8 +125,11 @@ PUT    /api/estados/{id}               # Atualiza estado
 DELETE /api/estados/{id}               # Remove estado
 ```
 
-#### 📋 Cards
-```
+---
+
+# 📋 Cards
+
+```text id="lmx5ru"
 GET    /api/cards                      # Lista todos os cards
 GET    /api/cards/{id}                 # Busca card por ID
 GET    /api/cards/status/{status}      # Lista cards por status
@@ -108,31 +139,42 @@ PATCH  /api/cards/{id}/move            # Move card entre colunas
 DELETE /api/cards/{id}                 # Remove card
 ```
 
-### Exemplos de Uso
+---
 
-#### Criar um novo animal
-```json
+# 📦 Exemplos de Uso
+
+## Criar um novo animal
+
+```json id="rvb42m"
 POST /api/animais
+
 {
   "Nome": "Jaguar",
   "NomeCientifico": "Panthera onca",
   "Descricao": "Maior felino das Américas",
   "UrlImagem": "https://example.com/jaguar.jpg",
+  "UrlVideo": "https://www.youtube.com/watch?v=EXEMPLO",
   "EstadoId": "33333333-3333-3333-3333-333333333333"
 }
 ```
 
-#### Mover um card
-```json
+---
+
+## Mover um card
+
+```json id="zcw0h8"
 PATCH /api/cards/{id}/move
+
 {
   "Status": "Doing"
 }
 ```
 
-## 🏗️ Estrutura do Projeto
+---
 
-```
+# 🏗️ Estrutura do Projeto
+
+```text id="f77g0n"
 TopicosEspeciaisAPI/
 ├── Models/
 │   ├── Animal.cs           # Entidade Animal
@@ -148,35 +190,58 @@ TopicosEspeciaisAPI/
 └── README.md               # Este arquivo
 ```
 
-## 🌟 Características Técnicas
+---
 
-- **Arquitetura limpa** com separação de responsabilidades
-- **Injeção de dependência** nativa do .NET
-- **CORS configurado** para integração com frontend
-- **Validações robustas** com tratamento de erros
-- **Dados em memória** com seed data automático
-- **Documentação automática** via Swagger
-- **Containerização** com Docker multi-stage
+# 🌟 Características Técnicas
 
-## 🐾 Animais Pré-cadastrados
+* Arquitetura limpa com separação de responsabilidades
+* Injeção de dependência nativa do .NET
+* CORS configurado para integração com frontend
+* Validações robustas com tratamento de erros
+* Dados em memória com seed data automático
+* Documentação automática via Swagger
+* Containerização com Docker multi-stage
+* Integração multimídia com suporte a vídeos do YouTube
 
-| Região | Animal | Nome Científico |
-|--------|--------|-----------------|
-| Norte | Boto-cor-de-rosa | *Inia geoffrensis* |
-| Norte | Pirarucu | *Arapaima gigas* |
-| Nordeste | Ararinha-azul | *Cyanopsitta spixii* |
-| Nordeste | Soldadinho-do-araripe | *Antilophia bokermanni* |
-| Centro-Oeste | Onça-pintada | *Panthera onca* |
-| Centro-Oeste | Arara-azul-grande | *Anodorhynchus hyacinthinus* |
-| Sudeste | Mico-leão-dourado | *Leontopithecus rosalia* |
-| Sudeste | Mico-leão-preto | *Leontopithecus chrysopygus* |
-| Sul | Gralha-azul | *Cyanocorax caeruleus* |
-| Sul | Bugio-ruivo | *Alouatta guariba clamitans* |
+---
 
-## 🤝 Contribuição
+# 🐾 Animais Pré-cadastrados
+
+| Região       | Animal                | Nome Científico              |
+| ------------ | --------------------- | ---------------------------- |
+| Norte        | Boto-cor-de-rosa      | *Inia geoffrensis*           |
+| Norte        | Pirarucu              | *Arapaima gigas*             |
+| Nordeste     | Ararinha-azul         | *Cyanopsitta spixii*         |
+| Nordeste     | Soldadinho-do-araripe | *Antilophia bokermanni*      |
+| Centro-Oeste | Onça-pintada          | *Panthera onca*              |
+| Centro-Oeste | Arara-azul-grande     | *Anodorhynchus hyacinthinus* |
+| Sudeste      | Mico-leão-dourado     | *Leontopithecus rosalia*     |
+| Sudeste      | Mico-leão-preto       | *Leontopithecus chrysopygus* |
+| Sul          | Gralha-azul           | *Cyanocorax caeruleus*       |
+| Sul          | Bugio-ruivo           | *Alouatta guariba clamitans* |
+
+---
+
+# 🤝 Contribuição
 
 1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/AmazingFeature`)
-3. Commit suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. Push para a branch (`git push origin feature/AmazingFeature`)
+
+2. Crie uma branch para sua feature:
+
+```bash id="g0e43x"
+git checkout -b feature/AmazingFeature
+```
+
+3. Commit suas mudanças:
+
+```bash id="0xq1uz"
+git commit -m "Add some AmazingFeature"
+```
+
+4. Push para a branch:
+
+```bash id="zbjlwm"
+git push origin feature/AmazingFeature
+```
+
 5. Abra um Pull Request
